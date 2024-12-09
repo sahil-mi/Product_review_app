@@ -7,7 +7,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
 
-export default function AjioProductCard({
+export default function ProductCard({
   image,
   title,
   price,
@@ -91,7 +91,7 @@ export default function AjioProductCard({
       </CardContent>
 
       {/* Add to Cart Button */}
-      <Box sx={{ padding: 2 }}>
+      {/* <Box sx={{ padding: 2 }}>
         <Button
           variant="contained"
           fullWidth
@@ -104,7 +104,7 @@ export default function AjioProductCard({
         >
           Add to Cart
         </Button>
-      </Box>
+      </Box> */}
     </Card>
   );
 }
