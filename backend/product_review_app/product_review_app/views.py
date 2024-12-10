@@ -16,3 +16,6 @@ def Signup(request):
             serializer.save()
             return Response({"data":serializer.data,"message":"success"})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+    
