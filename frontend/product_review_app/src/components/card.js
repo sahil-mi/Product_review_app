@@ -6,14 +6,18 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Rating from "@mui/material/Rating";
+import api from "../utils/api";
+import { media_base_url } from "../utils/utils";
 
 export default function ProductCard({
+  id,
   image,
   title,
   price,
   discount,
   originalPrice,
   rating,
+  onclick_fun
 }) {
   return (
     <Card
@@ -26,11 +30,13 @@ export default function ProductCard({
           boxShadow: 6,
         },
       }}
+
+      onClick={()=>{onclick_fun(id)}}
     >
       {/* Product Image */}
       <CardMedia
         component="img"
-        image={image}
+        image={media_base_url+image}
         alt={title}
         sx={{
           height: 300,

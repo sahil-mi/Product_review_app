@@ -17,7 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from rest_framework_simplejwt import views as jwt_views
-
+from django.conf import settings
+from django.conf.urls.static import static
 from.views import Signup
 
 from rest_framework.routers import DefaultRouter
@@ -25,6 +26,7 @@ from product.views import *
 
 router = DefaultRouter()
 router.register(r'product',ProductViewSet,basename="product")
+router.register(r'rating-and-review',ProductReviewSet,basename="rating_and_review")
 
 
 urlpatterns = [
@@ -37,6 +39,9 @@ urlpatterns = [
     path('api/', include(router.urls)), 
     ]
 
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 

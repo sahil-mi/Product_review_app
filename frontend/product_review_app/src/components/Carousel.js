@@ -6,30 +6,31 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Card, CardMedia } from '@mui/material';
 import img from "../images/product2.jpeg";
 import img2 from "../images/product.jpg";
+import { media_base_url } from '../utils/utils';
 
 // Dummy data for the carousel
-const images = [
-  {
-    id: 1,
-    src: img,
-    alt: 'Slide 1',
-    caption: 'This is the first slide',
-  },
-  {
-    id: 2,
-    src: img2,
-    alt: 'Slide 2',
-    caption: 'This is the second slide',
-  },
-  {
-    id: 3,
-    src: img,
-    alt: 'Slide 3',
-    caption: 'This is the third slide',
-  },
-];
+// const images = [
+//   {
+//     id: 1,
+//     src: img,
+//     alt: 'Slide 1',
+//     caption: 'This is the first slide',
+//   },
+//   {
+//     id: 2,
+//     src: img2,
+//     alt: 'Slide 2',
+//     caption: 'This is the second slide',
+//   },
+//   {
+//     id: 3,
+//     src: img,
+//     alt: 'Slide 3',
+//     caption: 'This is the third slide',
+//   },
+// ];
 
-export default function ProductCarousel() {
+export default function ProductCarousel({images}) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Go to the previous slide
@@ -56,11 +57,13 @@ export default function ProductCarousel() {
       }}
     >
       {/* Image */}
+      {images?(
+
       <Card sx={{ width: '100%', height: '100%' }}>
         <CardMedia
           component="img"
-          image={images[currentIndex].src}
-          alt={images[currentIndex].alt}
+          image={media_base_url + images[currentIndex]?.image}
+          alt={images[currentIndex]?.alt}
           sx={{
             width: '100%',
             height: '100%',
@@ -68,6 +71,7 @@ export default function ProductCarousel() {
           }}
         />
       </Card>
+      ):null}
 
       {/* Navigation Arrows */}
       <IconButton

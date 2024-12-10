@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Product, ProductImages, ProductDescription,ProductReview
-
+from django.db.models import Sum
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImages
@@ -14,16 +14,34 @@ class ProductDescriptionSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     product_images = ProductImageSerializer(many=True, source='productimages_set')  # Use related_name or reverse lookup
     descriptions = ProductDescriptionSerializer(many=True, source='productdescription_set')  # Use related_name or reverse lookup
+    discount = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
         fields = '__all__'
+    
+    def get_discount(self,instance):
+        discount = (instance.original_price - instance.price) * 100 // instance.original_price
+        return discount
+    def get_rating(self,instance):
+        product_review_ins = ProductReview.objects.filter(product = instance)
+        total_reviews = product_review_ins.count()
+        sum_rating = product_review_ins.aggregate(sum_rating=Sum("rating",default=0))["sum_rating"]
 
+        average_rating = 0
+        if sum_rating > 0:
+            average_rating = sum_rating / total_reviews
+        return average_rating
 
 class ProductReviewSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
     class Meta:
         model = ProductReview
         fields = "__all__"
+    def get_username(self,instance):
+        user = instance.user
+        return user.username
         
 class ProductReviewCreateSerializer(serializers.Serializer):
     product = serializers.IntegerField()

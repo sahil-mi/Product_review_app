@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-0%c9c*on93zm14=gr1#pu#m342zgke3^sf3@-hp4u*u)d^i0j$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+
+
 
 
 # Application definition
@@ -154,3 +156,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
 }
+
+
+MEDIA_URL = ""
+MEDIA_ROOT = os.path.join(BASE_DIR)

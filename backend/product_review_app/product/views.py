@@ -50,7 +50,10 @@ class ProductReviewSet(viewsets.ViewSet):
     queryset = ProductReview.objects.all()
     serializer_class = ProductReviewSerializer
 
-    def list(self, request, product_id=None):
+    #http://localhost:8000/api/rating-and-review/?product_id=2/
+    def list(self, request):
+        product_id = request.query_params.get('product_id')
+
         # Fetch reviews for a specific product
         product_reviews = self.queryset.filter(product__id=product_id)
         paginator = self.pagination_class()
@@ -60,6 +63,7 @@ class ProductReviewSet(viewsets.ViewSet):
         # Return paginated response
         return paginator.get_paginated_response(serializer.data)
 
+    #http://localhost:8000/api/rating-and-review/2/
     def retrieve(self, request, pk=None):
         # Retrieve a single review by its primary key
         review = get_object_or_404(self.queryset, pk=pk)
