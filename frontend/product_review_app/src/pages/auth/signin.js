@@ -42,7 +42,7 @@ function Signin(props) {
           type:"success",
           message:"Login successfull"
         })
-        navigate("/dashboard")
+        navigate("/product-list/")
       }
 
 
