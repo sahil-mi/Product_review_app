@@ -7,11 +7,11 @@ You can run this project directly taking clone or can be easily run with Docker.
 ### 1.With Docker
   backend : 
   ```shell  
-  docker pull sahilmullathil/vonnue_backend
+  docker pull sahilmullathil/product_review_backend
   ```
   frontend : 
   ```shell 
-  docker pull sahilmullathil/vonnue_frontend
+  docker pull sahilmullathil/product_review_frontend
   ```
   Build and Run
   ``` shell 
