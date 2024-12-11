@@ -18,33 +18,35 @@ import {
 } from "@mui/material";
 import api from "../../utils/api";
 import { useLocation } from "react-router-dom";
+import ReviewModal from "../../components/ReviewModal";
 
-function Product() {
+function Product(props) {
+  const { setOpenSnack, setSnackData } = props;
+
   const location = useLocation();
   const { id } = location.state;
 
   const [state, setState] = useState({
-    product: {
-      // title: "Casual Shirt",
-      // price: 400,
-      // originalPrice: 344,
-      // discount: 30,
-      // rating: 2,
-      // description: [
-      //   "We recommend you buy a size larger",
-      //   "Regular Fit",
-      //   "Package contains: 1 sweatshirt",
-      //   "Machine wash",
-      //   "Cotton",
-      //   "Product Code: 700194282011",
-      // ],
-    },
+    product: {},
   });
 
-  const [reviews, setReviews] = useState([
-    // { name: "John", rating: 4, review: "Great product, very comfortable!" },
-    // { name: "Alice", rating: 5, review: "Absolutely loved it!" },
-  ]);
+  const [updateReview, setUpdateReview] = useState({
+    review: "",
+    rating: 0,
+    id: null,
+  });
+  const [isReviewModal, setIsReviewModal] = useState(false);
+  const handleReviewOpen = (rating, review, id) => {
+    setUpdateReview({
+      review,
+      rating,
+      id,
+    });
+    setIsReviewModal(true);
+  };
+  const handleReviewClose = () => setIsReviewModal(false);
+
+  const [reviews, setReviews] = useState([]);
 
   const [newReview, setNewReview] = useState({
     rating: 0,
@@ -52,72 +54,130 @@ function Product() {
   });
 
   const handleAddReview = () => {
-    // if (newReview.name && newReview.review) {
-    //   setReviews([...reviews, newReview]);
-    //   setNewReview({ name: "", rating: 0, review: "" });
-    // }
-    SubmitReview()
+    SubmitReview();
   };
 
+  const handleDeleteReview = async (review_id) => {
+    const confirmed = window.confirm("Are you sure you want to delete ?");
+    if (confirmed) {
+      let message = "Success";
+      try {
+        let response = await api.delete(
+          `/api/rating-and-review/delete/${review_id}/`
+        );
 
+        if (response.status === 200) {
+          let newReviews = reviews.slice(1);
+          setReviews([...newReviews]);
+          setState({ ...state, is_reviewed: false });
 
-  const SubmitReview = async () => {
+          message = response.data.message;
+          setOpenSnack(true);
+          setSnackData({
+            type: "success",
+            message: message,
+          });
+        }
+      } catch (error) {
+        setOpenSnack(true);
+        setSnackData({
+          type: "error",
+          message: "Error",
+        });
+      }
+    }
+  };
+
+  const SubmitReview = async (is_update = false) => {
     let payload = {
-      product: id, // Ensure you pass the product ID
+      product: state.product.id,
       rating: newReview.rating,
       review: newReview.review,
     };
-  
+    let response = null;
+    let message = "Success";
+
+    let old_reviews = reviews
     try {
-      const response = await api.post('/rating-and-review/', payload);
-      console.log("Review Submitted:", response.data);
-    } catch (error) {
-      console.error("Error creating review:", error.response?.data || error.message);
-    }
-  };
-  
-
-
-
-
-
-
-  const fetchReview = async () => {
-    try {
-      let payload = {
-        // page:page,
-        // search:search
-      };
-      const response = await api.get(`/api/rating-and-review/product_id=${id}`);
-      if (response.status === 200) {
-        setState({ ...state, data: response.data });
+      if (is_update === true) {
+        payload = {
+          product: state.product.id,
+          rating: updateReview.rating,
+          review: updateReview.review,
+        };
+        response = await api.put(
+          `/api/rating-and-review/update/${updateReview.id}/`,
+          payload
+        );
+        old_reviews = old_reviews.slice(1)
+        setIsReviewModal(false)
+        setUpdateReview({
+          review: "",
+          rating: 0,
+          id: null,
+        })
+      } else {
+        response = await api.post("/api/rating-and-review/create/", payload);
       }
 
-      console.log("Data:", response.data);
+      if (response) {
+        message = response.data.message;
+
+        let newData = response.data.data;
+        let new_reviews = [newData, ...old_reviews];
+        setReviews(new_reviews);
+
+        setState({ ...state, is_reviewed: true });
+        setNewReview({
+          rating: 0,
+          review: "",
+        });
+      }
+
+      setOpenSnack(true);
+      setSnackData({
+        type: "success",
+        message: message,
+      });
+    } catch (error) {
+      console.error("Error:", error.response.data);
+      setOpenSnack(true);
+      setSnackData({
+        type: "error",
+        message: "Error",
+      });
+    }
+  };
+
+  const fetchReviews = async () => {
+    let is_reviewed = false;
+    try {
+      const response_reviews = await api.get(
+        `/api/rating-and-review/?product_id=${id}`
+      );
+      let reviews = [];
+      if (response_reviews.status === 200) {
+        reviews = response_reviews.data.results;
+        is_reviewed = response_reviews.data.is_reviewed;
+        setReviews(reviews);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+
+    return is_reviewed;
   };
 
   const fetchData = async () => {
     try {
-      let payload = {
-        // page:page,
-        // search:search
-      };
       const response = await api.get(`/api/product/${id}/`);
-      const response_reviews = await api.get(
-        `/api/rating-and-review/?product_id=${id}`
-      );
-
+      let is_reviewed = await fetchReviews();
       if (response.status === 200) {
-        let reviews = [];
-        if (response_reviews.status === 200) {
-          reviews = response_reviews.data.results;
-          setReviews(reviews);
-        }
-
-        setState({ ...state, product: response.data });
+        setState({
+          ...state,
+          product: response.data,
+          is_reviewed: is_reviewed,
+        });
       }
 
       console.log("Data:", response.data);
@@ -238,40 +298,44 @@ function Product() {
           <Divider sx={{ marginBottom: 2 }} />
 
           {/* Add Review Form */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              marginBottom: 3,
-            }}
-          >
-            <Rating
-              value={newReview.rating}
-              onChange={(e, newValue) =>
-                setNewReview({ ...newReview, rating: newValue })
-              }
-            />
-            <TextField
-              label="Review"
-              variant="outlined"
-              multiline
-              rows={4}
-              value={newReview.review}
-              onChange={(e) =>
-                setNewReview({ ...newReview, review: e.target.value })
-              }
-              fullWidth
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddReview}
-              sx={{ alignSelf: "flex-start" }}
-            >
-              Submit Review
-            </Button>
-          </Box>
+          {state?.is_reviewed === false && (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                  marginBottom: 3,
+                }}
+              >
+                <Rating
+                  value={newReview.rating}
+                  onChange={(e, newValue) =>
+                    setNewReview({ ...newReview, rating: newValue })
+                  }
+                />
+                <TextField
+                  label="Review"
+                  variant="outlined"
+                  multiline
+                  rows={4}
+                  value={newReview.review}
+                  onChange={(e) =>
+                    setNewReview({ ...newReview, review: e.target.value })
+                  }
+                  fullWidth
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleAddReview}
+                  sx={{ alignSelf: "flex-start" }}
+                >
+                  Submit Review
+                </Button>
+              </Box>
+            </>
+          )}
 
           {/* Display Reviews */}
           <List>
@@ -284,7 +348,47 @@ function Product() {
                 <Box>
                   <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                     {review.username}
+
+                    {review.is_editable && (
+                      <>
+                        <Typography
+                          variant="body2"
+                          component="span"
+                          sx={{
+                            cursor: "pointer",
+                            color: "#1976d2",
+                            paddingRight: 2,
+                            paddingLeft: 2,
+                            "&:hover": { textDecoration: "underline" },
+                          }}
+                          onClick={() => {
+                            handleReviewOpen(
+                              review.rating,
+                              review.review,
+                              review.id
+                            );
+                          }}
+                        >
+                          Edit
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          component="span"
+                          sx={{
+                            cursor: "pointer",
+                            color: "#d32f2f",
+                            "&:hover": { textDecoration: "underline" },
+                          }}
+                          onClick={() => {
+                            handleDeleteReview(review.id);
+                          }}
+                        >
+                          Delete
+                        </Typography>
+                      </>
+                    )}
                   </Typography>
+
                   <Rating name="read-only" value={review.rating} readOnly />
                   <Typography variant="body2" sx={{ marginTop: 1 }}>
                     {review.review}
@@ -294,6 +398,15 @@ function Product() {
             ))}
           </List>
         </Box>
+        <ReviewModal
+          open={isReviewModal}
+          setOpen={setIsReviewModal}
+          handleOpen={handleReviewOpen}
+          handleClose={handleReviewClose}
+          review={updateReview}
+          setReview={setUpdateReview}
+          onSubmit={SubmitReview}
+        />
       </Container>
     </React.Fragment>
   );

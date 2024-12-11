@@ -46,4 +46,4 @@ class ProductReview(models.Model):
         return f"{self.product.title} {self.user.username}"
     
     class Meta:
-        unique_together = [["product"],["user"]]
+        unique_together = [["product","user"]]

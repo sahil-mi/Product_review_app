@@ -28,9 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-
-
-
+CORS_ALLOW_ALL_ORIGINS = True
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt',
     'corsheaders',
+    'rest_framework_simplejwt',
     'product',
     ]
 
@@ -56,6 +54,20 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',  # This is fine for allowing read-only for anonymous users
+        # 'rest_framework.permissions.IsAuthenticated',  # Uncomment this if you want to restrict write access to authenticated users only
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT Authentication for secure endpoints
+    ],
+}
+
 
 ROOT_URLCONF = 'product_review_app.urls'
 
@@ -74,6 +86,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'product_review_app.wsgi.application'
 
@@ -141,16 +154,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-CORS_ALLOW_ALL_ORIGINS = True
-
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-}
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
@@ -160,3 +163,10 @@ SIMPLE_JWT = {
 
 MEDIA_URL = ""
 MEDIA_ROOT = os.path.join(BASE_DIR)
+
+
+# CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+
+# CSRF_COOKIE_NAME = "csrftoken"  # Ensure this matches the cookie name
+# CSRF_COOKIE_HTTPONLY = False  # Allow the JavaScript to read the cookie
+# CSRF_COOKIE_SECURE = False  # Make sure it's not set to True in development (use HTTPS for production)

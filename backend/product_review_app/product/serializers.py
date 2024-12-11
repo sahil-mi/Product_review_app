@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Product, ProductImages, ProductDescription,ProductReview
 from django.db.models import Sum
+from django.contrib.auth.models import User
+
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImages
@@ -36,12 +38,16 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class ProductReviewSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
+    is_editable = serializers.SerializerMethodField()
     class Meta:
         model = ProductReview
         fields = "__all__"
     def get_username(self,instance):
         user = instance.user
         return user.username
+    
+    def get_is_editable(self,instance):
+        return instance.user.id == self.context['request'].user.id 
         
 class ProductReviewCreateSerializer(serializers.Serializer):
     product = serializers.IntegerField()
@@ -56,14 +62,16 @@ class ProductReviewCreateSerializer(serializers.Serializer):
         review = validated_data.get("review")
 
         # Create and return the new ProductReview instance
-        return ProductReview.objects.create(
+        obj = ProductReview.objects.create(
             product=product,
             user=user,
             rating=rating,
             review=review,
         )
+        return obj
 
     def update(self, instance, validated_data):
+        print("here=============?")
         # Update fields in the ProductReview instance
         instance.rating = validated_data.get("rating", instance.rating)
         instance.review = validated_data.get("review", instance.review)

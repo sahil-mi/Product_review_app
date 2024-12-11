@@ -19,24 +19,34 @@ from django.urls import path,include
 from rest_framework_simplejwt import views as jwt_views
 from django.conf import settings
 from django.conf.urls.static import static
-from.views import Signup
+from.views import CustomTokenObtainPairView, Signup
 
 from rest_framework.routers import DefaultRouter
 from product.views import *
 
 router = DefaultRouter()
 router.register(r'product',ProductViewSet,basename="product")
-router.register(r'rating-and-review',ProductReviewSet,basename="rating_and_review")
+# router.register(r'rating-and-review',ProductReviewSet,basename="review")
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     
-    path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    
+    # path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     
     path('signup/', Signup, name='Signup'),
     path('api/', include(router.urls)), 
+    # path('api/rating-and-review/create/', ProductReviewAPIView.as_view(), name='review_create'),
+
+    path('api/rating-and-review/create/', ProductReviewSet.as_view({'post': 'create'}), name='review_create'),
+    path('api/rating-and-review/update/<int:pk>/', ProductReviewSet.as_view({'put': 'update'}), name='review_update'),
+    path('api/rating-and-review/delete/<int:pk>/', ProductReviewSet.as_view({'delete': 'destroy'}), name='review_delete'),
+    path('api/rating-and-review/', ProductReviewSet.as_view({'get': 'list'}), name='review_list'),
+    
+    
     ]
 
 

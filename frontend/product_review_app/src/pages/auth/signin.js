@@ -35,6 +35,7 @@ function Signin(props) {
       // Store tokens in localStorage or state
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
+      localStorage.setItem("username", response.data.username);
 
       if (response.status===200){
         setOpenSnack(true)

@@ -76,7 +76,7 @@ function Signup(props) {
             message: "User created successfully",
           });
 
-          navigate("/login");
+          navigate("/sign-in/");
         }
         console.log("User created successfully:", response.data);
       } catch (error) {

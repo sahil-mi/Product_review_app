@@ -10,10 +10,12 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { Checkbox, FormControlLabel } from "@mui/material";
+import { AppBar, Checkbox, FormControlLabel, Toolbar, Typography } from "@mui/material";
 
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import { handleLogout } from "../utils/utils";
+import { useNavigate } from "react-router-dom";
 
 export function InputBox(props) {
   if (props.data_type === "bool") {
@@ -147,3 +149,33 @@ export function Snackbars(props) {
     </div>
   );
 }
+
+
+
+
+
+const Navbar = () => {
+  const username = localStorage.getItem('username');
+  const navigate = useNavigate()
+
+  const log_out = () =>{
+    handleLogout()
+    navigate("/sign-in/")
+  }
+
+  return (
+    <AppBar color="light" position="static">
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        {/* Left side: Username */}
+        <Typography variant="h6" component="div">
+          {username}
+        </Typography>
+
+        {/* Right side: Logout button */}
+        <Button onClick={log_out} color="inherit">Logout</Button>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default Navbar;
