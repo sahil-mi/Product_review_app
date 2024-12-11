@@ -5,6 +5,7 @@ export const media_base_url = "http://localhost:8000"
 export const handleLogout = () =>{
     localStorage.removeItem("access_token")
     localStorage.removeItem("refresh_token")
+    localStorage.removeItem("username")
 }
 
 

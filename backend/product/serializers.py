@@ -1,3 +1,4 @@
+from .functions import get_avg_rating
 from rest_framework import serializers
 from .models import Product, ProductImages, ProductDescription,ProductReview
 from django.db.models import Sum
@@ -27,14 +28,8 @@ class ProductSerializer(serializers.ModelSerializer):
         discount = (instance.original_price - instance.price) * 100 // instance.original_price
         return discount
     def get_rating(self,instance):
-        product_review_ins = ProductReview.objects.filter(product = instance)
-        total_reviews = product_review_ins.count()
-        sum_rating = product_review_ins.aggregate(sum_rating=Sum("rating",default=0))["sum_rating"]
 
-        average_rating = 0
-        if sum_rating > 0:
-            average_rating = sum_rating / total_reviews
-        return average_rating
+        return get_avg_rating(instance)
 
 class ProductReviewSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
@@ -52,7 +47,7 @@ class ProductReviewSerializer(serializers.ModelSerializer):
 class ProductReviewCreateSerializer(serializers.Serializer):
     product = serializers.IntegerField()
     rating = serializers.IntegerField()
-    review = serializers.CharField()
+    review = serializers.CharField(allow_null=True,allow_blank=True)
 
     def create(self, validated_data):
         # Retrieve product from validated data
@@ -68,7 +63,10 @@ class ProductReviewCreateSerializer(serializers.Serializer):
             rating=rating,
             review=review,
         )
-        return obj
+        
+        average_rating =  get_avg_rating(product)
+        
+        return obj,average_rating
 
     def update(self, instance, validated_data):
         print("here=============?")
@@ -76,4 +74,6 @@ class ProductReviewCreateSerializer(serializers.Serializer):
         instance.rating = validated_data.get("rating", instance.rating)
         instance.review = validated_data.get("review", instance.review)
         instance.save()
-        return instance
+        
+        average_rating =  get_avg_rating(instance.product)
+        return instance,average_rating

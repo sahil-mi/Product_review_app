@@ -21,14 +21,17 @@ export default function ProductCard({
 }) {
   return (
     <Card
+    className="sahil"
+    elevation={0}
       sx={{
         maxWidth: 300,
         margin: "auto",
-        boxShadow: 3,
+        // boxShadow: 3,
         borderRadius: 2,
         "&:hover": {
           boxShadow: 6,
         },
+        
       }}
 
       onClick={()=>{onclick_fun(id)}}
@@ -48,9 +51,9 @@ export default function ProductCard({
       <CardContent>
         {/* Product Title */}
         <Typography
-          variant="h6"
+          // variant="h6"
           sx={{
-            fontWeight: "bold",
+            // fontWeight: "bold",
             textOverflow: "ellipsis",
             overflow: "hidden",
             whiteSpace: "nowrap",
@@ -63,7 +66,7 @@ export default function ProductCard({
         <Box sx={{ display: "flex", alignItems: "center", marginTop: 1 }}>
           <Typography
             variant="h6"
-            sx={{ color: "primary.main", fontWeight: "bold", marginRight: 1 }}
+            sx={{ fontWeight: "bold", marginRight: 1 }}
           >
             ₹{price}
           </Typography>
@@ -83,11 +86,12 @@ export default function ProductCard({
             variant="body2"
             sx={{
               color: "green",
-              fontWeight: "bold",
+              // fontWeight: "bold",
               marginTop: 0.5,
+              marginBottom: 0.5,
             }}
           >
-            {discount}% OFF
+            ({discount}% OFF)
           </Typography>
         )}
 
@@ -96,21 +100,6 @@ export default function ProductCard({
         </Typography>
       </CardContent>
 
-      {/* Add to Cart Button */}
-      {/* <Box sx={{ padding: 2 }}>
-        <Button
-          variant="contained"
-          fullWidth
-          sx={{
-            backgroundColor: "primary.main",
-            "&:hover": {
-              backgroundColor: "primary.dark",
-            },
-          }}
-        >
-          Add to Cart
-        </Button>
-      </Box> */}
     </Card>
   );
 }

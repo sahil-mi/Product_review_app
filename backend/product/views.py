@@ -8,6 +8,10 @@ from rest_framework.permissions import AllowAny,IsAuthenticated,IsAdminUser
 from rest_framework.pagination import PageNumberPagination
 from django.views.decorators.csrf import csrf_exempt
 
+
+
+
+
 #==========================PRODUCT=============================
 class ProductPagination(PageNumberPagination):
     page_size = 10
@@ -93,8 +97,8 @@ class ProductReviewSet(viewsets.ViewSet):
         # Initialize serializer with request data
         serializer = ProductReviewCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            review = serializer.save()
-            return Response({"message": "Review created successfully!","data": ProductReviewSerializer(review,context={'request': request}).data}, status=201)
+            review, average_rating = serializer.save()
+            return Response({"message": "Review created successfully!","data": ProductReviewSerializer(review,context={'request': request}).data,"rating":average_rating}, status=201)
         return Response(serializer.errors, status=400)
 
     def update(self, request, pk=None):
@@ -102,14 +106,15 @@ class ProductReviewSet(viewsets.ViewSet):
         review = get_object_or_404(self.queryset, pk=pk)
         serializer = ProductReviewCreateSerializer(review, data=request.data, context={'request': request}, partial=True)
         if serializer.is_valid():
-            updated_review = serializer.save()
-            return Response({"message": "Review updated successfully!", "data": ProductReviewSerializer(updated_review,context={'request': request}).data}, status=200)
+            updated_review,average_rating = serializer.save()
+            return Response({"message": "Review updated successfully!", "data": ProductReviewSerializer(updated_review,context={'request': request}).data,"rating":average_rating}, status=200)
         return Response(serializer.errors, status=400)
 
     def destroy(self, request, pk=None):
         review = get_object_or_404(self.queryset, pk=pk)
         review.delete()
-        return Response({"message": "Review deleted successfully!"}, status=200)
+        average_rating =  get_avg_rating(review.product)
+        return Response({"message": "Review deleted successfully!","rating":average_rating}, status=200)
         
         
 

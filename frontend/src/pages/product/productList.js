@@ -60,7 +60,9 @@ console.log(state);
   return (
     <div>
       {/* heading */}
-      <h2 className="center-text">Product list</h2>
+      <h2 className="center-text">
+        {/* Product list */}
+        </h2>
 
       {/* ===========prodcut list======== */}
       <React.Fragment>

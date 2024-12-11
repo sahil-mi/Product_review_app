@@ -22,4 +22,4 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImagesSection,ProductDescriptionSection]
     
 admin.site.register(Product,ProductAdmin)
-admin.site.register(ProductReview)
+# admin.site.register(ProductReview)

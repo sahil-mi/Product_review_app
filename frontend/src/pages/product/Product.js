@@ -69,7 +69,11 @@ function Product(props) {
         if (response.status === 200) {
           let newReviews = reviews.slice(1);
           setReviews([...newReviews]);
-          setState({ ...state, is_reviewed: false });
+
+          let prodcut = state.product
+          prodcut.rating=response.data.rating
+
+          setState({ ...state,prodcut, is_reviewed: false });
 
           message = response.data.message;
           setOpenSnack(true);
@@ -98,6 +102,7 @@ function Product(props) {
     let message = "Success";
 
     let old_reviews = reviews
+    
     try {
       if (is_update === true) {
         payload = {
@@ -127,7 +132,10 @@ function Product(props) {
         let new_reviews = [newData, ...old_reviews];
         setReviews(new_reviews);
 
-        setState({ ...state, is_reviewed: true });
+        let prodcut = state.product
+        prodcut.rating=response.data.rating
+
+        setState({ ...state,prodcut, is_reviewed: true });
         setNewReview({
           rating: 0,
           review: "",
@@ -257,7 +265,7 @@ function Product(props) {
               sx={{
                 // textDecoration: "line-through",
                 fontWeight: "bold",
-                color: "text.secondary",
+                color: "text.secondary"
               }}
             >
               MRP{" "}
@@ -270,7 +278,8 @@ function Product(props) {
               >
                 ₹{state.product.original_price}{" "}
               </span>{" "}
-              ({state.product.discount}% OFF)
+              <span style={{color: "green"}}> ({state.product.discount}% OFF)</span>
+             
             </Typography>
 
             <Box>
