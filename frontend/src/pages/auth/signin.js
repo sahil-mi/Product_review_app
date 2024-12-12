@@ -1,14 +1,13 @@
 import "../../styles/signup.css";
-import {BasicButton, InputBox} from "../../components/BasicComponents";
+import { BasicButton, InputBox } from "../../components/BasicComponents";
 import { useState } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import axios from "axios";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import { handleLoginError } from "../../utils/utils";
 function Signin(props) {
   const navigate = useNavigate();
-  const { setOpenSnack, setSnackData } = props
+  const { setOpenSnack, setSnackData } = props;
   const [state, setState] = useState({
     name: "",
     email: "",
@@ -22,14 +21,16 @@ function Signin(props) {
       let value = e.target.value;
 
       setState({ ...state, [name]: value });
-
     }
   };
 
-  const onSubmit = async() =>{
-    let payload = {...state}
+  const onSubmit = async () => {
+    let payload = { ...state };
     try {
-      const response = await axios.post("http://localhost:8000/api/token/", payload);
+      const response = await axios.post(
+        "http://localhost:8000/api/token/",
+        payload,
+      );
       console.log("Login successful:", response.data);
 
       // Store tokens in localStorage or state
@@ -37,22 +38,20 @@ function Signin(props) {
       localStorage.setItem("refresh_token", response.data.refresh);
       localStorage.setItem("username", response.data.username);
 
-      if (response.status===200){
-        setOpenSnack(true)
+      if (response.status === 200) {
+        setOpenSnack(true);
         setSnackData({
-          type:"success",
-          message:"Login successfull"
-        })
-        navigate("/product-list/")
+          type: "success",
+          message: "Login successfull",
+        });
+        navigate("/product-list/");
       }
-
-
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
 
       handleLoginError(error, setOpenSnack, setSnackData);
     }
-  }
+  };
 
   return (
     <div className="signup-main-container">
@@ -82,7 +81,7 @@ function Signin(props) {
       >
         <InputBox
           required
-          label="password"
+          label="Password"
           onChange={onChange}
           value={state.password}
           name={"password"}
@@ -98,7 +97,9 @@ function Signin(props) {
       >
         <BasicButton variant={"outlined"} onClick={onSubmit} name={"Submit"} />
       </Box>
-        <p  style={{cursor:"pointer",color:"blue",textAlign:"center"}}><Link to="/sign-up">Don't you have an account?</Link></p>
+      <p style={{ cursor: "pointer", color: "blue", textAlign: "center" }}>
+        <Link to="/sign-up">Don't you have an account?</Link>
+      </p>
     </div>
   );
 }

@@ -1,68 +1,58 @@
 import { useState } from "react";
-import axios from "axios";
 import "../../styles/product.css";
 
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-
+import { Divider } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 
-import ProductCard from "../../components/card";
-import img from "../../images/product2.jpeg";
+import ProductCard from "../../components/ProductCard";
 import api from "../../utils/api";
 import { useNavigate } from "react-router-dom";
+import { TablePagination } from "../../components/BasicComponents";
 
-function ProductList() {
-  const navigate = useNavigate()
+function ProductList(props) {
+  const { setOpenSnack, setSnackData } = props;
+  const navigate = useNavigate();
+
+  const [page, setPage] = useState(1);
+  const [total_count, settotal_count] = useState(1);
+  const handleChangePage = (e, v) => {
+    setPage(v);
+  };
+
   const [state, setState] = useState({
-    data: [
-    ],
+    data: [],
   });
 
-
-  const navigate_to_view = (id) =>{
-    navigate("/product-view/",{state:{"id":id}})
-  }
-
-
-
-
-
+  const navigate_to_view = (id) => {
+    navigate("/product-view/", { state: { id: id } });
+  };
 
   const fetchData = async () => {
     try {
-      let payload = {
-        // page:page,
-        // search:search
-      }
-      const response = await api.get('/api/product/');
-      if (response.status === 200){
-        
-        setState({...state,data:response.data})
+      const response = await api.get(`/api/product/?page=${page}`);
+      if (response.status === 200) {
+        setState({ ...state, data: response.data.results });
+        settotal_count(response.data.count);
       }
 
-      console.log('Data:', response.data);
+      console.log("Data:", response.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
 
-  React.useEffect(()=>{
-    fetchData()
-  },[])
-
-
-console.log(state);
-
+  React.useEffect(() => {
+    fetchData();
+  }, [page]);
 
   return (
     <div>
       {/* heading */}
-      <h2 className="center-text">
-        {/* Product list */}
-        </h2>
+      <h2 className="center-text">{/* Product list */}</h2>
 
       {/* ===========prodcut list======== */}
       <React.Fragment>
@@ -90,6 +80,15 @@ console.log(state);
               ))}
             </Grid>
           </Box>
+          <Divider sx={{ marginBottom: 3 }} />
+          <div className="pagination-div">
+            <TablePagination
+              sx={{ marginBottom: 3 }}
+              total_count={total_count}
+              page={page}
+              onChange={handleChangePage}
+            />
+          </div>
         </Container>
       </React.Fragment>
     </div>

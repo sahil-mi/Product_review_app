@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Django backend service
+  backend:
+    image: sahilmullathil/product_review_backend
+    container_name: product_review_backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  # PostgreSQL service
+  db:
+    image: postgres:13
+    container_name: product_review_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: product_review_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+
+  # React frontend service
+  frontend:
+    image: sahilmullathil/product_review_frontend
+    container_name: product_review_frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "90:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

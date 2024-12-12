@@ -1,16 +1,22 @@
-.center-text{
-    text-align: center;
+.center-text {
+  text-align: center;
 }
 .prod-heading {
-    font-size: 14px;
-    color: #406786;
-    letter-spacing: .05em;
-    font-weight: 700;
-    margin-bottom: 10px;
-    margin-top: 30px;
+  font-size: 14px;
+  color: #406786;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  margin-bottom: 10px;
+  margin-top: 30px;
 }
 
+.prod-list {
+  padding: 0 20px;
+}
 
-.prod-list{
-    padding: 0 20px;
+.pagination-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
 }

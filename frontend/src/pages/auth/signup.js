@@ -1,12 +1,7 @@
 import "../../styles/signup.css";
-import {
-  BasicButton,
-  InputBox,
-  Snackbars,
-} from "../../components/BasicComponents";
+import { BasicButton, InputBox } from "../../components/BasicComponents";
 import { useState } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { handleLoginError } from "../../utils/utils";
@@ -67,7 +62,7 @@ function Signup(props) {
       try {
         const response = await axios.post(
           "http://localhost:8000/signup/",
-          payload
+          payload,
         );
         if (response.status === 200) {
           setOpenSnack(true);
@@ -127,7 +122,7 @@ function Signup(props) {
       >
         <InputBox
           required
-          label="password"
+          label="Password"
           onChange={onChange}
           value={state.password}
           name={"password"}
@@ -143,7 +138,7 @@ function Signup(props) {
       >
         <InputBox
           required
-          label="Confirm password"
+          label="Confirm Password"
           onChange={onChange}
           value={state.confirmPassword}
           name={"confirmPassword"}

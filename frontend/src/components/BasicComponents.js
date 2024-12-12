@@ -10,7 +10,13 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { AppBar, Checkbox, FormControlLabel, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Checkbox,
+  FormControlLabel,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
@@ -68,13 +74,15 @@ export function ToggleComponent(props) {
 
 export function TablePagination(props) {
   let total_count = props.total_count;
-  let total_pages = Math.ceil(total_count / 10);
+  let total_pages = Math.ceil(total_count / 12);
   return (
     <Stack spacing={2}>
       <Pagination
         count={total_pages}
         page={props.page}
         onChange={props.onChange}
+        variant="outlined"
+        shape="rounded"
       />
     </Stack>
   );
@@ -122,10 +130,6 @@ export function SelectBox(props) {
 export function Snackbars(props) {
   const { open, setOpen, data } = props;
 
-  const handleClick = () => {
-    setOpen(true);
-  };
-
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -150,29 +154,27 @@ export function Snackbars(props) {
   );
 }
 
-
-
-
-
 const Navbar = () => {
-  const username = localStorage.getItem('username');
-  const navigate = useNavigate()
+  const username = localStorage.getItem("username");
+  const navigate = useNavigate();
 
-  const log_out = () =>{
-    handleLogout()
-    navigate("/sign-in/")
-  }
+  const log_out = () => {
+    handleLogout();
+    navigate("/sign-in/");
+  };
 
   return (
     <AppBar color="light" position="static">
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         {/* Left side: Username */}
         <Typography variant="h6" component="div">
           {username}
         </Typography>
 
         {/* Right side: Logout button */}
-        <Button onClick={log_out} color="inherit">Logout</Button>
+        <Button onClick={log_out} color="inherit">
+          Logout
+        </Button>
       </Toolbar>
     </AppBar>
   );

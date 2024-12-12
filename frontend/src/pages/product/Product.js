@@ -14,14 +14,21 @@ import {
   Divider,
   List,
   ListItem,
-  ListItemText,
 } from "@mui/material";
 import api from "../../utils/api";
 import { useLocation } from "react-router-dom";
 import ReviewModal from "../../components/ReviewModal";
-
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 function Product(props) {
   const { setOpenSnack, setSnackData } = props;
+
+  const [page, setPage] = useState(1);
+  const [total_count, settotal_count] = useState(1);
+  let total_pages = Math.ceil(total_count / 5);
+
+  const handleChangePage = (e, v) => {
+    setPage(page + 1);
+  };
 
   const location = useLocation();
   const { id } = location.state;
@@ -63,17 +70,17 @@ function Product(props) {
       let message = "Success";
       try {
         let response = await api.delete(
-          `/api/rating-and-review/delete/${review_id}/`
+          `/api/rating-and-review/delete/${review_id}/`,
         );
 
         if (response.status === 200) {
           let newReviews = reviews.slice(1);
           setReviews([...newReviews]);
 
-          let prodcut = state.product
-          prodcut.rating=response.data.rating
+          let prodcut = state.product;
+          prodcut.rating = response.data.rating;
 
-          setState({ ...state,prodcut, is_reviewed: false });
+          setState({ ...state, prodcut, is_reviewed: false });
 
           message = response.data.message;
           setOpenSnack(true);
@@ -101,8 +108,8 @@ function Product(props) {
     let response = null;
     let message = "Success";
 
-    let old_reviews = reviews
-    
+    let old_reviews = reviews;
+
     try {
       if (is_update === true) {
         payload = {
@@ -112,15 +119,15 @@ function Product(props) {
         };
         response = await api.put(
           `/api/rating-and-review/update/${updateReview.id}/`,
-          payload
+          payload,
         );
-        old_reviews = old_reviews.slice(1)
-        setIsReviewModal(false)
+        old_reviews = old_reviews.slice(1);
+        setIsReviewModal(false);
         setUpdateReview({
           review: "",
           rating: 0,
           id: null,
-        })
+        });
       } else {
         response = await api.post("/api/rating-and-review/create/", payload);
       }
@@ -132,10 +139,10 @@ function Product(props) {
         let new_reviews = [newData, ...old_reviews];
         setReviews(new_reviews);
 
-        let prodcut = state.product
-        prodcut.rating=response.data.rating
+        let prodcut = state.product;
+        prodcut.rating = response.data.rating;
 
-        setState({ ...state,prodcut, is_reviewed: true });
+        setState({ ...state, prodcut, is_reviewed: true });
         setNewReview({
           rating: 0,
           review: "",
@@ -161,13 +168,14 @@ function Product(props) {
     let is_reviewed = false;
     try {
       const response_reviews = await api.get(
-        `/api/rating-and-review/?product_id=${id}`
+        `/api/rating-and-review/?product_id=${id}&page=${page}`,
       );
-      let reviews = [];
+      let new_reviews = [];
       if (response_reviews.status === 200) {
-        reviews = response_reviews.data.results;
+        new_reviews = [...reviews, ...response_reviews.data.results];
         is_reviewed = response_reviews.data.is_reviewed;
-        setReviews(reviews);
+        setReviews(new_reviews);
+        settotal_count(response_reviews.data.count);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -194,12 +202,19 @@ function Product(props) {
     }
   };
 
+  const showMoreReviews = () => {
+    fetchReviews();
+  };
+
   React.useEffect(() => {
     fetchData();
   }, []);
 
-  console.log(state, "state==");
-  console.log(reviews, "revi");
+  React.useEffect(() => {
+    if (page !== 1) {
+      showMoreReviews();
+    }
+  }, [page]);
 
   return (
     <React.Fragment>
@@ -235,11 +250,17 @@ function Product(props) {
               {state.product.title}
             </Typography>
 
-            <Rating
-              name="read-only"
-              value={state.product?.rating ?? 0}
-              readOnly
-            />
+            <Box display="flex" alignItems="center">
+              <Rating
+                name="read-only"
+                value={state.product?.rating ?? 0}
+                readOnly
+                precision={0.5}
+              />
+              <Typography variant="body1" ml={1}>
+                ({state.product?.rating ?? 0})
+              </Typography>
+            </Box>
 
             <Box
               sx={{
@@ -265,7 +286,7 @@ function Product(props) {
               sx={{
                 // textDecoration: "line-through",
                 fontWeight: "bold",
-                color: "text.secondary"
+                color: "text.secondary",
               }}
             >
               MRP{" "}
@@ -278,8 +299,10 @@ function Product(props) {
               >
                 ₹{state.product.original_price}{" "}
               </span>{" "}
-              <span style={{color: "green"}}> ({state.product.discount}% OFF)</span>
-             
+              <span style={{ color: "green" }}>
+                {" "}
+                ({state.product.discount}% OFF)
+              </span>
             </Typography>
 
             <Box>
@@ -374,7 +397,7 @@ function Product(props) {
                             handleReviewOpen(
                               review.rating,
                               review.review,
-                              review.id
+                              review.id,
                             );
                           }}
                         >
@@ -405,6 +428,22 @@ function Product(props) {
                 </Box>
               </ListItem>
             ))}
+
+            {page !== total_pages ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginTop: 1,
+                  cursor: "pointer",
+                  "&:hover": { textDecoration: "underline" },
+                }}
+                onClick={handleChangePage}
+              >
+                <Typography variant="body2">Show more</Typography>
+                <ExpandMoreIcon />
+              </Box>
+            ) : null}
           </List>
         </Box>
         <ReviewModal

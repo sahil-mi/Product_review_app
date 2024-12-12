@@ -22,6 +22,7 @@ __pycache__/
 # Ignore media/uploads (adjust if needed)
 media/
 uploads/
+product_images/
 
 # Ignore SQLite database (if using SQLite)
 db.sqlite3
