@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'product',
-    'django_extensions'
+    # 'django_extensions'
     ]
 
 MIDDLEWARE = [
@@ -103,26 +103,26 @@ WSGI_APPLICATION = 'product_review_app.wsgi.application'
 # }
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'product_review_db',
-#         'USER': 'postgres',
-#         'PASSWORD': '12345678',
-#         'HOST': 'localhost',  
-#         'PORT': '5432',  
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'product_review_db',
         'USER': 'postgres',
         'PASSWORD': '12345678',
-        'HOST': 'localhost', #db 
-        'PORT': '5432',
+        'HOST': 'localhost',  
+        'PORT': '5432',  
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'product_review_db',
+#         'USER': 'postgres',
+#         'PASSWORD': '12345678',
+#         'HOST': 'db', 
+#         'PORT': '5432',
+#     }
+# }
 
 
 

@@ -23,6 +23,43 @@ import Alert from "@mui/material/Alert";
 import { handleLogout } from "../utils/utils";
 import { useNavigate } from "react-router-dom";
 
+import { InputAdornment } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+
+export function SearchBox (props) {
+
+  const {handleChange} = props
+  return (
+    <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
+      <TextField
+      onChange={handleChange}
+        label=""
+        placeholder="Search"
+        variant="outlined"
+        fullWidth
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        sx={{
+          mb: 3,
+          height: "35px", // Adjusted height
+          width: "300px",
+          "& .MuiInputBase-root": {
+            height: "35px", // Applied to input's container
+          },
+        }}
+      />
+    </div>
+  );
+};
+
+
+
+
 export function InputBox(props) {
   if (props.data_type === "bool") {
     return (

@@ -1,4 +1,3 @@
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.pagination import PageNumberPagination
 from .models import *
 from django.contrib.auth.models import User
@@ -22,16 +21,20 @@ class ProductViewSet(viewsets.ViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-    # http://localhost:8000/api/product/?page=2/
+  
     def list(self, request):
+        search = request.query_params.get('search', None)
+        queryset = self.queryset
+        if search is not None:
+            queryset = queryset.filter(title__istartswith=str(search.lower()))
+        
         paginator = self.pagination_class()
-        paginated_queryset = paginator.paginate_queryset(
-            self.queryset, request)
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
         serializer = self.serializer_class(paginated_queryset, many=True)
         paginated_response = paginator.get_paginated_response(serializer.data)
         return paginated_response
 
-    # http://localhost:8000/api/product/2/
+   
     def retrieve(self, request, pk=None):
         product = get_object_or_404(self.queryset, pk=pk)
         serializer = self.serializer_class(product)
@@ -51,11 +54,10 @@ class ProductReviewSet(viewsets.ViewSet):
     queryset = ProductReview.objects.all()
     serializer_class = ProductReviewSerializer
 
-    # http://localhost:8000/api/rating-and-review/?product_id=2/
+   
     def list(self, request):
         product_id = request.query_params.get('product_id')
 
-        # product_reviews =  self.queryset.filter(product__id=product_id)
         # Filter reviews by the user first
         user_reviews = list(
             self.queryset.filter(
@@ -87,7 +89,7 @@ class ProductReviewSet(viewsets.ViewSet):
 
         return paginated_response
 
-    # http://localhost:8000/api/rating-and-review/2/
+  
 
     def retrieve(self, request, pk=None):
         # Retrieve a single review by its primary key
@@ -95,9 +97,8 @@ class ProductReviewSet(viewsets.ViewSet):
         serializer = self.serializer_class(review)
         return Response(serializer.data)
 
-    # @csrf_exempt
+
     def create(self, request):
-        print("helloo")
         # Initialize serializer with request data
         serializer = ProductReviewCreateSerializer(
             data=request.data, context={'request': request})

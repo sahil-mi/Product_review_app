@@ -11,11 +11,19 @@ import Grid from "@mui/material/Grid2";
 import ProductCard from "../../components/ProductCard";
 import api from "../../utils/api";
 import { useNavigate } from "react-router-dom";
-import { TablePagination } from "../../components/BasicComponents";
+import { SearchBox, TablePagination } from "../../components/BasicComponents";
 
 function ProductList(props) {
   const { setOpenSnack, setSnackData } = props;
   const navigate = useNavigate();
+
+  const [search,setSearch] =useState("")
+
+  const handleSearch = (e) =>{
+    if(e){
+      setSearch(e.target.value)
+    }
+  }
 
   const [page, setPage] = useState(1);
   const [total_count, settotal_count] = useState(1);
@@ -33,7 +41,7 @@ function ProductList(props) {
 
   const fetchData = async () => {
     try {
-      const response = await api.get(`/api/product/?page=${page}`);
+      const response = await api.get(`/api/product/?page=${page}&search=${search}`);
       if (response.status === 200) {
         setState({ ...state, data: response.data.results });
         settotal_count(response.data.count);
@@ -45,7 +53,7 @@ function ProductList(props) {
 
   React.useEffect(() => {
     fetchData();
-  }, [page]);
+  }, [page,search]);
 
   return (
     <div>
@@ -55,13 +63,19 @@ function ProductList(props) {
       {/* ===========prodcut list======== */}
       <React.Fragment>
         <CssBaseline />
-        <Container fixed>
+        <Container fixed >
+
+
           <Box sx={{ flexGrow: 1 }}>
+          <SearchBox handleChange={handleSearch} />
+
+
             <Grid
               container
               spacing={{ xs: 2, md: 3 }}
               columns={{ xs: 4, sm: 8, md: 12 }}
             >
+
               {state.data.map((item, index) => (
                 <Grid key={index} size={{ xs: 2, sm: 4, md: 4 }}>
                   <ProductCard
