@@ -48,4 +48,8 @@ docker-compose exec backend python manage.py createsuperuser
     npm install
     npm start
     ```
-
+## ToDo
+- Test cases
+- pylint config
+- Write detailed API documentation using Postman or any other softwares
+- Implement performance optmizations like caching. 
