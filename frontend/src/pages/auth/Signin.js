@@ -31,7 +31,6 @@ function Signin(props) {
         "http://localhost:8000/api/token/",
         payload,
       );
-      console.log("Login successful:", response.data);
 
       // Store tokens in localStorage or state
       localStorage.setItem("access_token", response.data.access);
@@ -47,8 +46,6 @@ function Signin(props) {
         navigate("/product-list/");
       }
     } catch (error) {
-      console.error("Login error:", error.response?.data || error.message);
-
       handleLoginError(error, setOpenSnack, setSnackData);
     }
   };

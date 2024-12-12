@@ -155,7 +155,6 @@ function Product(props) {
         message: message,
       });
     } catch (error) {
-      console.error("Error:", error.response.data);
       setOpenSnack(true);
       setSnackData({
         type: "error",
@@ -178,7 +177,11 @@ function Product(props) {
         settotal_count(response_reviews.data.count);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      setOpenSnack(true);
+      setSnackData({
+        type: "error",
+        message: "Error",
+      });
     }
 
     return is_reviewed;
@@ -195,10 +198,8 @@ function Product(props) {
           is_reviewed: is_reviewed,
         });
       }
-
-      console.log("Data:", response.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      //pass
     }
   };
 

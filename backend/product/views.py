@@ -17,7 +17,7 @@ class ProductPagination(PageNumberPagination):
 
 
 class ProductViewSet(viewsets.ViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     pagination_class = ProductPagination
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -46,7 +46,7 @@ class ProductReviewPagination(PageNumberPagination):
 
 
 class ProductReviewSet(viewsets.ViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     pagination_class = ProductReviewPagination
     queryset = ProductReview.objects.all()
     serializer_class = ProductReviewSerializer

@@ -3,8 +3,8 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Signup from "./pages/auth/signup";
-import Signin from "./pages/auth/signin";
+import Signup from "./pages/auth/Signup";
+import Signin from "./pages/auth/Signin";
 import ProductList from "./pages/product/ProductList";
 import Product from "./pages/product/Product";
 import Navbar, { Loader, Snackbars } from "./components/BasicComponents";

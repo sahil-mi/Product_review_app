@@ -9,7 +9,7 @@ export const handleLogout = () => {
 };
 
 export const handleLoginError = (error, setOpenSnack, setSnackData) => {
-  console.error("Login error:", error.response?.data || error.message);
+  // console.error("Login error:", error.response?.data || error.message);
 
   const errors = error.response?.data;
   let errorMessage = "An error occurred.";

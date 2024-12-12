@@ -49,7 +49,6 @@ function Signup(props) {
 
   const onSubmit = async () => {
     let { isError, errorMessage } = Validation();
-    console.log(isError, errorMessage, "isError, errorMessage");
 
     if (isError) {
       setOpenSnack(true);
@@ -73,15 +72,11 @@ function Signup(props) {
 
           navigate("/sign-in/");
         }
-        console.log("User created successfully:", response.data);
       } catch (error) {
-        console.error("Error creating user:", error.response.data);
         handleLoginError(error, setOpenSnack, setSnackData);
       }
     }
   };
-
-  console.log(state, "state");
 
   return (
     <div className="signup-main-container">

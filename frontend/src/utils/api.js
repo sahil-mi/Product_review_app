@@ -17,7 +17,7 @@ const refreshAccessToken = async () => {
     localStorage.setItem("access_token", newAccessToken);
     return newAccessToken;
   } catch (error) {
-    console.error("Error refreshing token", error);
+    // console.error("Error refreshing token", error);
     // Log the user out if refresh token has expired
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");

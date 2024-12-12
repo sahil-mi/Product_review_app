@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'product',
+    'django_extensions'
     ]
 
 MIDDLEWARE = [
@@ -118,7 +119,7 @@ DATABASES = {
         'NAME': 'product_review_db',
         'USER': 'postgres',
         'PASSWORD': '12345678',
-        'HOST': 'localhost',#'db', 
+        'HOST': 'localhost', #db 
         'PORT': '5432',
     }
 }

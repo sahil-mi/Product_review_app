@@ -38,10 +38,8 @@ function ProductList(props) {
         setState({ ...state, data: response.data.results });
         settotal_count(response.data.count);
       }
-
-      console.log("Data:", response.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      // console.error("Error fetching data:", error);
     }
   };
 
