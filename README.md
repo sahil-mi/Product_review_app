@@ -5,15 +5,7 @@ This project is a full-stack web application that uses Django for the backend an
 You can run this project directly taking clone or can be easily run with Docker.
 
 ### 1.With Docker
-  backend : 
-  ```shell  
-  docker pull sahilmullathil/product_review_backend
-  ```
-  frontend : 
-  ```shell 
-  docker pull sahilmullathil/product_review_frontend
-  ```
-  Run
+
 
   ```shell 
 docker-compose exec backend python manage.py migrate
